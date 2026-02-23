@@ -572,7 +572,7 @@ const nodes = new vis.DataSet(Object.entries(E).map(([id, e]) => {
   const pos = positions[id];
   return {
     id,
-    label: `${e.label}\n${e.locked}L + ${e.new}N = ${e.total} fields`,
+    label: `${e.label}\n${e.locked} Locked + ${e.new} New = ${e.total} fields`,
     x: pos.x, y: pos.y,
     shape: 'box',
     borderWidth: 2,
