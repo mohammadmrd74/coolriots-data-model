@@ -101,7 +101,16 @@ The top-level entity. Everything else belongs to or serves an employee.
     }
   },
 
-  // ─── State Machine (NEW) ───
+  // ─── Operational Context (NEW — V1) ───
+  "operationalContext": {
+    "currentObjective": "string",
+    "activePlan": "string",
+    "lastStatus": "string",
+    "customFields": {},
+    "writableByEmployee": false
+  },
+
+  // ─── State Machine (NEW — V3) ───
   "state": {
     "enabled": false,
     "currentState": "string",
@@ -274,31 +283,32 @@ The top-level entity. Everything else belongs to or serves an employee.
 
 ### Field Count Summary
 
-| Section | Fields | Status |
-|---------|--------|--------|
-| Identity | 7 | LOCKED |
-| References | 5 | LOCKED |
-| Streaming | 4 | LOCKED |
-| Versioning | 4 | LOCKED |
-| Persona | 1 (nested) | NEW |
-| Autonomy | 1 (nested) | NEW |
-| Goals | 1 (array) | NEW |
-| Memory | 1 (nested) | NEW |
-| State | 1 (nested) | NEW |
-| Task Queue | 1 (nested) | NEW |
-| Onboarding | 1 (nested) | NEW |
-| Supervision | 1 (nested) | NEW |
-| Emotional Intelligence | 1 (nested) | NEW |
-| Handoff | 1 (nested) | NEW |
-| Interrupt Handling | 1 (nested) | NEW |
-| Triggers | 1 (array) | NEW |
-| Connected Assistants | 1 (array) | NEW |
-| Router | 1 (nested) | NEW |
-| Evaluation | 1 (nested) | NEW |
-| Outbound Config | 1 (nested) | NEW |
-| Orchestration | 1 (nested) | NEW |
-| Reporting | 1 (nested) | NEW |
-| **Total top-level keys** | **36** | 20 locked + 16 new |
+| Section | Fields | Status | Version |
+|---------|--------|--------|---------|
+| Identity | 7 | LOCKED | V1 |
+| References | 5 | LOCKED | V1 |
+| Streaming | 4 | LOCKED | V1 |
+| Versioning | 4 | LOCKED | V1 |
+| Persona | 1 (nested) | NEW | V1 |
+| Autonomy | 1 (nested) | NEW | V1 |
+| Operational Context | 1 (nested) | NEW | V1 (operator-write), V2 (employee self-write) |
+| Router | 1 (nested) | NEW | V1 |
+| Memory | 1 (nested) | NEW | V1 (basic), V2+ (knowledge, working) |
+| Handoff | 1 (nested) | NEW | V1 (human only), V4 (to assistant) |
+| Outbound Config | 1 (nested) | NEW | V1 (formatting), V2 (business hours) |
+| Evaluation | 1 (nested) | NEW | V2 (stored in V1, not enforced) |
+| Goals | 1 (array) | NEW | V2 |
+| Triggers | 1 (array) | NEW | V2 |
+| Reporting | 1 (nested) | NEW | V2 |
+| State Machine | 1 (nested) | NEW | V3 |
+| Task Queue | 1 (nested) | NEW | V3 |
+| Onboarding | 1 (nested) | NEW | V3 |
+| Supervision | 1 (nested) | NEW | V3 |
+| Emotional Intelligence | 1 (nested) | NEW | V3 |
+| Interrupt Handling | 1 (nested) | NEW | V3 |
+| Connected Assistants | 1 (array) | NEW | V4 |
+| Orchestration | 1 (nested) | NEW | V4 |
+| **Total top-level keys** | **37** | 20 locked + 17 new |
 
 ---
 
@@ -360,7 +370,7 @@ Not a standalone entity — always embedded in an Opcode's `steps` array.
 {
   // ─── Core (LOCKED) ───
   "id": "string (UUID)",
-  "type": "LLM | Non-LLM | API | Memory | Condition | Loop | Parallel | Transform | Wait",
+  "type": "LLM | Non-LLM | RAG | API | Memory | Condition | Loop | Parallel | Transform | Wait | Choose | Subflow",
   "name": "string [NEW]",
   "description": "string [NEW]",
   "input_params": {},
@@ -474,6 +484,55 @@ Not a standalone entity — always embedded in an Opcode's `steps` array.
 }
 ```
 
+**RAG [NEW — alias for Non-LLM]:**
+```json
+{
+  "function_call": {
+    "function_name": "RAG_API",
+    "function_params": {
+      "org_id": "string",
+      "sub_org_id": "string",
+      "collection_id": "string → references Collection._id",
+      "query_text": "string (Jinja2 template)",
+      "top_k": 10,
+      "top_n": 5,
+      "use_rerank": true,
+      "filters": {},
+      "file_keys_filter": [],
+      "search_type": "vector | keyword | hybrid",
+      "offset": 0
+    }
+  }
+}
+```
+
+**Choose [NEW — V1]:**
+```json
+{
+  "branches": [
+    {
+      "branchId": "string",
+      "condition": "string (OEL expression)",
+      "label": "string (human-readable)",
+      "steps": ["string (step IDs)"]
+    }
+  ],
+  "defaultBranch": {
+    "steps": ["string (step IDs)"]
+  }
+}
+```
+
+**Subflow [NEW — V1]:**
+```json
+{
+  "opcode_id": "string → references Opcode.opcode_id",
+  "inputMapping": {
+    "<subflow_input_key>": "string (Jinja2 template from parent context)"
+  }
+}
+```
+
 ### Step output_params by type
 
 **LLM:**
@@ -496,6 +555,23 @@ Not a standalone entity — always embedded in an Opcode's `steps` array.
 ```json
 {
   "output_name": "string"
+}
+```
+
+**Choose [NEW]:**
+```json
+{
+  "output_names": { "<local_key>": "<source_key>" }
+}
+```
+Output comes from whichever branch executed.
+
+**Subflow [NEW]:**
+```json
+{
+  "outputMapping": {
+    "<parent_context_key>": "<subflow_output_key>"
+  }
 }
 ```
 

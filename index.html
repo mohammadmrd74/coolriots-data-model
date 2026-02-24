@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CoolRiots — Digital Employee Data Model</title>
+<title>CoolRiots — Digital Employee Data Model (V1 Spec)</title>
 <script src="https://unpkg.com/vis-network@9.1.9/standalone/umd/vis-network.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -18,6 +18,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .fbtn{padding:3px 12px;border-radius:14px;border:1px solid #30363d;background:transparent;color:#c9d1d9;font-size:11px;cursor:pointer;transition:all .2s}
 .fbtn:hover{border-color:#58a6ff;color:#58a6ff}
 .fbtn.active{background:#58a6ff22;border-color:#58a6ff;color:#58a6ff}
+.fbtn.v1{border-color:#3fb950;color:#3fb950;background:#3fb95022}
 
 /* Legend bar */
 #legend{display:flex;gap:18px;padding:6px 24px;background:#0d1117;border-bottom:1px solid #21262d;font-size:11px}
@@ -30,8 +31,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* Panel */
 #panel{width:0;overflow-y:auto;overflow-x:hidden;background:#161b22;border-left:1px solid #30363d;transition:width .3s ease}
-#panel.open{width:480px;min-width:480px}
-#pc{padding:24px;width:480px}
+#panel.open{width:520px;min-width:520px}
+#pc{padding:24px;width:520px}
 .ph{position:relative;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #30363d}
 .ph h2{font-size:20px;color:#e6edf3;margin-bottom:4px;padding-right:30px}
 .ph .sub{font-size:13px;color:#8b949e;line-height:1.5}
@@ -40,23 +41,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .pm{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .tag{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
 .tag.phase{background:#1f6feb33;color:#58a6ff;border:1px solid #1f6feb55}
+.tag.v1active{background:#3fb95022;color:#3fb950;border:1px solid #3fb95055}
+.tag.v2defer{background:#d2992222;color:#d29922;border:1px solid #d2992244}
 .tag.stor{background:#23863633;color:#3fb950;border:1px solid #23863655}
 .tag.key{background:#bc8cff22;color:#bc8cff;border:1px solid #bc8cff44}
 
 /* Sections */
 .sec{margin-bottom:12px}
-.sh{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#21262d;border-radius:6px;cursor:pointer;user-select:none}
+.sh{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#21262d;border-radius:6px;cursor:pointer;user-select:none;gap:6px}
 .sh:hover{background:#292e36}
-.sh h3{font-size:12px;font-weight:600;color:#e6edf3}
-.badge{font-size:10px;padding:1px 8px;border-radius:8px}
+.sh h3{font-size:12px;font-weight:600;color:#e6edf3;flex:1}
+.badge{font-size:10px;padding:1px 8px;border-radius:8px;white-space:nowrap}
 .badge.l{background:#f8514922;color:#f85149}
 .badge.n{background:#d2992222;color:#d29922}
+.ver{font-size:9px;padding:1px 6px;border-radius:6px;font-weight:700;white-space:nowrap}
+.ver.v1{background:#3fb95022;color:#3fb950;border:1px solid #3fb95044}
+.ver.v2{background:#d2992222;color:#d29922;border:1px solid #d2992244}
+.ver.v3{background:#f8514922;color:#f85149;border:1px solid #f8514944}
+.ver.v4{background:#bc8cff22;color:#bc8cff;border:1px solid #bc8cff44}
 .sb{padding:4px 0;display:none}
 .sb.show{display:block}
 .fr{display:flex;padding:3px 12px;font-size:12px;border-radius:3px;align-items:baseline;gap:6px}
 .fr:hover{background:#21262d}
-.fn{color:#79c0ff;font-family:'SFMono-Regular',Consolas,monospace;min-width:180px;flex-shrink:0;font-size:12px}
-.ft{color:#6e7681;font-family:'SFMono-Regular',Consolas,monospace;font-size:11px;min-width:80px;flex-shrink:0}
+.fn{color:#79c0ff;font-family:'SFMono-Regular',Consolas,monospace;min-width:170px;flex-shrink:0;font-size:12px}
+.ft{color:#6e7681;font-family:'SFMono-Regular',Consolas,monospace;font-size:11px;min-width:70px;flex-shrink:0}
 .fd{color:#8b949e;font-size:11px}
 
 /* Relationships */
@@ -85,14 +93,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 
 <div id="header">
-  <h1>CoolRiots Digital Employee Platform <span>— Data Model</span></h1>
+  <h1>CoolRiots Digital Employee Platform <span>— Data Model (V1 Spec)</span></h1>
   <div class="filters">
-    <label>Phase:</label>
+    <label>Version:</label>
     <button class="fbtn active" onclick="setFilter(0)">All</button>
-    <button class="fbtn" onclick="setFilter(1)">v1 Core</button>
-    <button class="fbtn" onclick="setFilter(2)">v2 Autonomy</button>
-    <button class="fbtn" onclick="setFilter(3)">v3 Collab</button>
-    <button class="fbtn" onclick="setFilter(4)">v4 Intelligence</button>
+    <button class="fbtn" onclick="setFilter(1)">V1 Active</button>
+    <button class="fbtn" onclick="setFilter(2)">V2 Additions</button>
+    <button class="fbtn" onclick="setFilter(3)">V3 Enterprise</button>
+    <button class="fbtn" onclick="setFilter(4)">V4 Workforce</button>
   </div>
 </div>
 
@@ -103,6 +111,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="leg"><span class="dot" style="background:#d29922"></span> Q4: Capability</div>
   <div class="leg"><span class="dot" style="background:#f85149"></span> Q5: Trust</div>
   <div class="leg"><span class="dot" style="background:#39d2c0"></span> Cross-cutting</div>
+  <div class="leg" style="margin-left:auto;border-left:1px solid #30363d;padding-left:18px"><span class="dot" style="background:#3fb950;border:2px solid #3fb950"></span> V1 Active</div>
+  <div class="leg"><span class="dot" style="background:#30363d;border:2px dashed #6e7681"></span> V2+ Deferred</div>
 </div>
 
 <div id="main">
@@ -114,9 +124,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 <div id="stats">
   <span><strong>11</strong> entities</span>
-  <span><strong>15</strong> relationships</span>
-  <span><strong>4</strong> governance configs</span>
-  <span>Click a node to explore • Scroll to zoom • Drag to pan</span>
+  <span><strong>9</strong> V1 active</span>
+  <span><strong>2</strong> V2 deferred</span>
+  <span><strong>16</strong> relationships</span>
+  <span>Click a node to explore &bull; Scroll to zoom &bull; Drag to pan</span>
 </div>
 
 <script>
@@ -130,17 +141,19 @@ const COLORS = {
   cc: { bg: '#0a2620', border: '#39d2c0', font: '#e6edf3', highlight: { bg: '#103d34', border: '#56e8d5' } }
 };
 
+const DEFERRED = { bg: '#161b22', border: '#30363d', font: '#484f58', highlight: { bg: '#21262d', border: '#484f58' } };
+
 // ── Entity Data ──
 const E = {
   employee: {
     label: 'Employee',
-    q: 'q1', phase: 1, locked: 20, new: 16, total: 36,
-    desc: 'Top-level entity. Everything belongs to or serves an employee. Holds identity, behavioral rules, operational state, and references to all other entities.',
+    q: 'q1', v1: true, locked: 20, new: 17, total: 37,
+    desc: 'Top-level entity. Everything belongs to or serves an employee. V1 active sections: identity, persona, behavioral constraints, operational context, router, memory, handoff, access permissions, outbound config, lifecycle.',
     storage: 'Redis / DB',
     key: 'assistantId',
     question: 'Q1: Who is this employee and what is their job?',
     sections: [
-      { name: 'Identity', status: 'l', fields: [
+      { name: 'Identity', status: 'l', ver: 'v1', fields: [
         ['assistantId', 'string', 'Unique identifier'],
         ['title', 'string', 'Display name'],
         ['description', 'string', 'Optional description'],
@@ -149,154 +162,207 @@ const E = {
         ['createdBy', 'string', 'User who created'],
         ['updatedBy', 'string', 'User who last modified'],
       ]},
-      { name: 'References', status: 'l', fields: [
+      { name: 'References', status: 'l', ver: 'v1', fields: [
         ['opcodes', 'string[]', 'Opcode IDs'],
         ['defaultOpcode', 'string', 'Entry point opcode'],
         ['channels', 'string[]', 'Channel IDs'],
         ['collections', 'string[]', 'Collection IDs'],
-        ['databases', 'string[]', 'Connection IDs'],
+        ['databases', 'string[]', 'Connection IDs (V2 — BeXO)'],
       ]},
-      { name: 'Streaming', status: 'l', fields: [
+      { name: 'Streaming', status: 'l', ver: 'v1', fields: [
         ['stream', 'boolean', 'Enable streaming'],
         ['streamCumulative', 'boolean', 'Cumulative mode'],
         ['emitTokenEvents', 'boolean', 'Token events'],
         ['streamBufferSentences', 'boolean', 'Buffer by sentences'],
       ]},
-      { name: 'Versioning', status: 'l', fields: [
+      { name: 'Versioning', status: 'l', ver: 'v1', fields: [
         ['version', 'number', 'Incremented on edit'],
-        ['status', 'string', 'active | inactive'],
+        ['status', 'string', 'V1: draft | active'],
         ['disabled', 'boolean', 'Soft disable'],
         ['created', 'ISO 8601', 'Creation timestamp'],
         ['updated', 'ISO 8601', 'Last update timestamp'],
       ]},
-      { name: 'Persona', status: 'n', fields: [
-        ['persona.systemPrompt', 'string', 'Core behavioral instruction'],
+      { name: 'Persona', status: 'n', ver: 'v1', fields: [
+        ['persona.systemPrompt', 'string', 'Core behavioral instruction — injected as @context.identity.*'],
         ['persona.role', 'string', 'Human-readable role title'],
         ['persona.domainExpertise', 'string[]', 'Routing & capability tags'],
         ['persona.tone', 'string', 'professional | friendly | formal | concise'],
         ['persona.language', 'string', 'Primary language code'],
-        ['persona.secondaryLanguages', 'string[]', 'Additional languages'],
+        ['persona.secondaryLanguages', 'string[]', 'V2: additional languages'],
         ['persona.fallbackBehavior', 'string', 'Action when uncertain'],
       ]},
-      { name: 'Autonomy', status: 'n', fields: [
-        ['autonomy.level', 'string', 'supervised | semi-autonomous | autonomous'],
-        ['autonomy.escalation', 'object', 'When/how to escalate'],
-        ['autonomy.boundaries', 'object', 'mustNever[], mustAlways[], limits'],
+      { name: 'Behavioral Constraints', status: 'n', ver: 'v1', fields: [
+        ['autonomy.level', 'string', 'V1: supervised. V2: semi-autonomous | autonomous'],
+        ['autonomy.escalation', 'object', 'onConfidenceBelow, escalateTo (human in V1)'],
+        ['autonomy.boundaries', 'object', 'mustNever[], mustAlways[], allowedOpcodes[], limits'],
       ]},
-      { name: 'Goals', status: 'n', fields: [
+      { name: 'Operational Context', status: 'n', ver: 'v1', fields: [
+        ['operationalContext.currentObjective', 'string', 'V1: operator-writable only'],
+        ['operationalContext.activePlan', 'string', 'V1: operator-writable only'],
+        ['operationalContext.lastStatus', 'string', 'V2: employee self-write via _context_patch'],
+        ['operationalContext.customFields', 'object', 'V2: employee self-write via _context_patch'],
+        ['operationalContext.writableByEmployee', 'boolean', 'V1: always false'],
+      ]},
+      { name: 'Router', status: 'n', ver: 'v1', fields: [
+        ['router.enabled', 'boolean', 'V1: auto mode or direct mode'],
+        ['router.mode', 'string', 'auto | direct'],
+        ['router.modelConfigId', 'string', 'Required for auto mode → ModelConfig'],
+        ['router.instructionId', 'string', 'Routing instruction → Instruction'],
+        ['router.confidenceThreshold', 'number', 'Default 0.7'],
+        ['router.onLowConfidence', 'string', 'ask_clarification | use_default_opcode | escalate'],
+        ['router.onNoMatch', 'string', 'use_default_opcode | escalate | reject'],
+      ]},
+      { name: 'Memory', status: 'n', ver: 'v1', fields: [
+        ['memory.conversationHistory', 'object', 'V1: maxTurns, ttl, session isolation per user'],
+        ['memory.knowledgeMemory', 'object', 'V2: self-improving RAG collection'],
+        ['memory.workingMemory', 'object', 'V3: persistent scratchpad'],
+      ]},
+      { name: 'Access Permissions', status: 'n', ver: 'v1', fields: [
+        ['accessPermissions.allowedCollections', 'string[]', 'Scoped to org + sub_org'],
+        ['accessPermissions.allowedApiConfigs', 'string[]', 'Scoped to org + sub_org'],
+        ['accessPermissions.allowedConnections', 'string[]', 'V2: BeXO connections'],
+        ['accessPermissions.sensitivityLevel', 'string', 'public | internal | confidential | restricted'],
+      ]},
+      { name: 'Handoff', status: 'n', ver: 'v1', fields: [
+        ['handoff.toHuman', 'object', 'V1: email notification. V3: live_transfer, ticket'],
+        ['handoff.toAssistant', 'object', 'V4: multi-employee routing rules'],
+        ['handoff.resumeAfterHandoff', 'boolean', 'V3: resume when handoff completes'],
+      ]},
+      { name: 'Outbound Config', status: 'n', ver: 'v1', fields: [
+        ['outboundConfig.formattingRules', 'object', 'V1: webchat=markdown, email=plain_text, api=json'],
+        ['outboundConfig.businessHours', 'object', 'V2: timezone, hours, outsideHoursAction'],
+        ['outboundConfig.deliveryConfirmation', 'boolean', 'V2'],
+      ]},
+      { name: 'Lifecycle', status: 'n', ver: 'v1', fields: [
+        ['lifecycle.environment', 'string', 'V1: production only. V3: dev/staging/production'],
+        ['lifecycle.owner', 'string', 'User responsible for this employee'],
+        ['lifecycle.deployedAt', 'ISO 8601', 'When deployed to current environment'],
+      ]},
+      { name: 'Evaluation', status: 'n', ver: 'v2', fields: [
+        ['evaluation.enabled', 'boolean', 'V1: stored, NOT enforced. V2: active'],
+        ['evaluation.modelConfigId', 'string', 'Separate model for quality judging'],
+        ['evaluation.criteria', 'string[]', 'relevance, accuracy, safety, format_compliance'],
+        ['evaluation.scoreThreshold', 'number', 'Minimum score to pass (0-1)'],
+        ['evaluation.onFailure', 'string', 'retry | escalate | deliver_with_warning'],
+      ]},
+      { name: 'Goals', status: 'n', ver: 'v2', fields: [
         ['goals[]', 'array', 'KPIs: { goalId, metric, target, measurement, window }'],
       ]},
-      { name: 'Memory', status: 'n', fields: [
-        ['memory.conversationHistory', 'object', 'Extended conversation retention'],
-        ['memory.knowledgeMemory', 'object', 'Self-improving RAG collection'],
-        ['memory.workingMemory', 'object', 'Persistent scratchpad'],
+      { name: 'Triggers', status: 'n', ver: 'v2', fields: [
+        ['triggers', 'string[]', 'Trigger IDs — V2 activation'],
       ]},
-      { name: 'State Machine', status: 'n', fields: [
-        ['state.enabled', 'boolean', 'Enable state tracking'],
-        ['state.currentState', 'string', 'Current state name'],
-        ['state.transitions', 'object', 'State → event → next state'],
-        ['state.data', 'object', 'Arbitrary state data'],
+      { name: 'Reporting', status: 'n', ver: 'v2', fields: [
+        ['reporting.dailySummary', 'object', 'V2: sendTo, channel, includeMetrics'],
+        ['reporting.alerts', 'array', 'V2: condition → notify rules'],
       ]},
-      { name: 'Task Queue', status: 'n', fields: [
-        ['taskQueue.maxConcurrent', 'number', 'Max parallel tasks'],
-        ['taskQueue.priorityRules', 'array', 'Condition → priority mapping'],
-        ['taskQueue.overflow', 'string', 'queue | reject | delegate'],
+      { name: 'State Machine', status: 'n', ver: 'v3', fields: [
+        ['state.currentState', 'string', 'V3: current state name'],
+        ['state.transitions', 'object', 'V3: state → event → next state'],
+        ['state.data', 'object', 'V3: arbitrary state data'],
       ]},
-      { name: 'Onboarding', status: 'n', fields: [
-        ['onboarding.status', 'string', 'training | probation | active | veteran'],
-        ['onboarding.shadowAssistantId', 'string', 'Senior employee to shadow'],
-        ['onboarding.graduationCriteria', 'object', 'Min interactions, confidence, satisfaction'],
+      { name: 'Task Queue', status: 'n', ver: 'v3', fields: [
+        ['taskQueue.maxConcurrent', 'number', 'V3: max parallel tasks'],
+        ['taskQueue.priorityRules', 'array', 'V3: condition → priority mapping'],
+        ['taskQueue.overflow', 'string', 'V3: queue | reject | delegate'],
       ]},
-      { name: 'Supervision', status: 'n', fields: [
-        ['supervision.mode', 'string', 'shadow | supervised | independent'],
-        ['supervision.supervisorId', 'string', 'User or assistant ID'],
-        ['supervision.reviewQueue', 'object', 'Sample rate and review conditions'],
-        ['supervision.feedbackIntegration', 'object', 'Source and auto-adjust'],
+      { name: 'Onboarding', status: 'n', ver: 'v3', fields: [
+        ['onboarding.status', 'string', 'V3: training | probation | active | veteran'],
+        ['onboarding.shadowAssistantId', 'string', 'V3: senior employee to shadow'],
+        ['onboarding.graduationCriteria', 'object', 'V3: min interactions, confidence, satisfaction'],
       ]},
-      { name: 'Emotional Intelligence', status: 'n', fields: [
-        ['emotionalIntelligence.detectSentiment', 'boolean', 'Detect user emotions'],
-        ['emotionalIntelligence.adaptTone', 'boolean', 'Adjust response tone'],
-        ['emotionalIntelligence.frustrationThreshold', 'number', 'Escalate after N frustrated messages'],
+      { name: 'Supervision', status: 'n', ver: 'v3', fields: [
+        ['supervision.mode', 'string', 'V3: shadow | supervised | independent'],
+        ['supervision.supervisorId', 'string', 'V3: user or assistant ID'],
+        ['supervision.reviewQueue', 'object', 'V3: sample rate and review conditions'],
       ]},
-      { name: 'Handoff', status: 'n', fields: [
-        ['handoff.toHuman', 'object', 'Method, context transfer, summary'],
-        ['handoff.toAssistant', 'object', 'Condition → target assistant rules'],
-        ['handoff.resumeAfterHandoff', 'boolean', 'Resume when handoff completes'],
+      { name: 'Emotional Intelligence', status: 'n', ver: 'v3', fields: [
+        ['emotionalIntelligence.detectSentiment', 'boolean', 'V3: detect user emotions'],
+        ['emotionalIntelligence.adaptTone', 'boolean', 'V3: adjust response tone'],
+        ['emotionalIntelligence.frustrationThreshold', 'number', 'V3: escalate after N frustrated messages'],
       ]},
-      { name: 'Relationships', status: 'n', fields: [
-        ['triggers', 'string[]', 'Trigger IDs'],
-        ['connectedAssistants', 'array', '{ assistantId, role, capabilities, protocol }'],
-        ['reporting', 'object', 'Daily summary + alert config'],
+      { name: 'Connected Assistants', status: 'n', ver: 'v4', fields: [
+        ['connectedAssistants[]', 'array', 'V4: { assistantId, role, capabilities, protocol }'],
       ]},
-      { name: 'Intelligence', status: 'n', fields: [
-        ['router', 'object', 'Opcode selection: modelConfigId, instructionId, thresholds'],
-        ['evaluation', 'object', 'Output quality gate: modelConfigId, criteria, thresholds'],
-        ['outboundConfig', 'object', 'Channel formatting, business hours'],
-        ['orchestration', 'object', 'Delegation rules, context transfer policy'],
+      { name: 'Orchestration', status: 'n', ver: 'v4', fields: [
+        ['orchestration.delegationRules', 'object', 'V4: maxDepth, allowedDelegates, contextTransfer'],
       ]},
     ]
   },
   opcode: {
     label: 'Opcode (Skill)',
-    q: 'q4', phase: 1, locked: 5, new: 4, total: 9,
-    desc: 'An executable pipeline of steps. Each skill is one complete, testable unit of work. 9 step types: LLM, Non-LLM, API, Memory, Condition, Loop, Parallel, Transform, Wait.',
+    q: 'q4', v1: true, locked: 5, new: 4, total: 9,
+    desc: 'An executable pipeline of steps. V1: 12 step types (LLM, RAG, API, Memory, Wait, Choose, Subflow, Condition, Loop, Parallel, Transform, Non-LLM). Quality flags stored but evaluation not enforced until V2.',
     storage: 'Redis',
     key: 'opcode_id',
     question: 'Q4: What can they do and how?',
     sections: [
-      { name: 'Core', status: 'l', fields: [
+      { name: 'Core', status: 'l', ver: 'v1', fields: [
         ['opcode_id', 'string', 'Unique identifier'],
         ['type', 'string', 'ChatOp | AutoOp'],
-        ['version', 'string', 'Schema version'],
-        ['description', 'string', 'What this opcode does (NEW addition)'],
+        ['version', 'string', 'V1: single active version per skill'],
+        ['description', 'string', 'What this opcode does'],
         ['steps', 'Step[]', 'Ordered array of step definitions'],
       ]},
-      { name: 'Skill Metadata', status: 'n', fields: [
+      { name: 'Skill Metadata', status: 'n', ver: 'v1', fields: [
         ['category', 'string[]', 'Tags: analysis, communication, data_retrieval, action'],
-        ['executionProfile', 'object', 'interactive, durationClass, parallelizable, idempotent'],
-        ['inputContract', 'object', 'required[], optional[], contextDependencies[]'],
-        ['outputContract', 'object', 'returns{}, producesContextPatch, compatibleChannels'],
-        ['quality', 'object', 'evaluateBeforeDelivery, maxTokenBudget, retryPolicy'],
+        ['executionProfile', 'object', 'V1: interactive, durationClass. V2: parallelizable, idempotent'],
+        ['inputContract', 'object', 'V1: required[], optional[], contextDependencies[]'],
+        ['outputContract', 'object', 'V1: returns{}, compatibleChannels[]. V2: producesContextPatch. V3: producesUiSpec'],
+        ['quality', 'object', 'V1: riskLevel, maxTokenBudget, retryPolicy. V2: evaluateBeforeDelivery enforced'],
       ]},
     ]
   },
   step: {
     label: 'Step',
-    q: 'q4', phase: 1, locked: 7, new: 2, total: 9,
-    desc: 'Embedded in Opcode. 9 types: LLM, Non-LLM (RAG), API, Memory, Condition, Loop, Parallel, Transform, Wait. Data flows via Jinja2 templates.',
+    q: 'q4', v1: true, locked: 7, new: 5, total: 12,
+    desc: 'Embedded in Opcode. V1: 12 types — LLM, RAG (alias: Non-LLM), API, Memory, Wait, Choose, Subflow, Condition, Loop, Parallel, Transform. Data flows via Jinja2 templates.',
     storage: 'Embedded in Opcode',
     key: 'id (UUID)',
     question: 'Q4: What can they do and how?',
     sections: [
-      { name: 'Common Fields', status: 'l', fields: [
+      { name: 'Common Fields', status: 'l', ver: 'v1', fields: [
         ['id', 'string', 'UUID, unique within opcode'],
-        ['type', 'string', 'LLM | Non-LLM | API | Memory | Condition | Loop | Parallel | Transform | Wait'],
-        ['name', 'string', 'Human-readable label (NEW)'],
-        ['description', 'string', 'What this step does (NEW)'],
+        ['type', 'string', '12 types (9 locked + 3 new: RAG, Choose, Subflow)'],
+        ['name', 'string', 'Human-readable label'],
+        ['description', 'string', 'What this step does'],
         ['input_params', 'object', 'Type-specific input configuration'],
         ['output_params', 'object', 'Type-specific output mapping'],
-        ['routing', 'object', 'next[], show_output, accumulate_output, true_branch[], false_branch[]'],
+        ['routing', 'object', 'next[], show_output, true_branch[], false_branch[]'],
       ]},
-      { name: 'Type-Specific', status: 'l', fields: [
+      { name: 'Container Fields', status: 'l', ver: 'v1', fields: [
         ['loop_steps', 'Step[]', 'Nested steps for Loop type'],
         ['parallel_steps', 'Step[]', 'Concurrent steps for Parallel type'],
+      ]},
+      { name: 'V1 Step Types', status: 'n', ver: 'v1', fields: [
+        ['LLM', 'step', 'Call an LLM with prompt template'],
+        ['RAG (new)', 'step', 'Knowledge retrieval (preferred name for Non-LLM)'],
+        ['API', 'step', 'Call an external API'],
+        ['Memory', 'step', 'Retrieve conversation history'],
+        ['Wait', 'step', 'Pause for human input (interactive skills)'],
+        ['Choose (new)', 'step', 'Multi-branch routing (N conditions)'],
+        ['Subflow (new)', 'step', 'Call another opcode as sub-routine'],
+        ['Condition', 'step', 'Binary branching (when)'],
+        ['Loop', 'step', 'Iteration (for / repeat_until)'],
+        ['Parallel', 'step', 'Run steps concurrently'],
+        ['Transform', 'step', 'Data transformation'],
+        ['Non-LLM', 'step', 'Legacy alias for RAG (backward compat)'],
       ]},
     ]
   },
   modelConfig: {
     label: 'Model Config',
-    q: 'q3', phase: 1, locked: 0, new: 15, total: 15,
-    desc: 'LLM model available to the system. Referenced by unique_name in LLM steps and by modelConfigId in router/evaluation.',
+    q: 'q3', v1: true, locked: 0, new: 15, total: 15,
+    desc: 'LLM model available to the system. V1: all providers (IBM, Groq, SambaNova, OpenAI, Anthropic, Mistral, Gemini, Novita, Cerebras, OnPrem). Capability and cost profiles stored.',
     storage: 'Redis',
     key: 'modelConfigId',
     question: 'Q3: How do they think and decide?',
     sections: [
-      { name: 'All Fields', status: 'n', fields: [
+      { name: 'All Fields', status: 'n', ver: 'v1', fields: [
         ['modelConfigId', 'string', 'Unique identifier'],
         ['orgId', 'string', 'Organization scope'],
         ['subOrgId', 'string', 'Sub-organization scope'],
         ['uniqueName', 'string', 'What LLM steps reference'],
-        ['provider', 'string', 'groq | ibm | sambanova | openai | anthropic'],
+        ['provider', 'string', 'groq | ibm | sambanova | openai | anthropic | mistral | gemini | novita | cerebras | onprem'],
         ['modelIdentifier', 'string', 'Provider-specific model ID'],
         ['capabilities', 'string[]', 'reasoning, speed, structured_output, vision, multilingual'],
         ['contextWindow', 'number', 'Max context tokens (e.g. 128000)'],
@@ -312,13 +378,13 @@ const E = {
   },
   instruction: {
     label: 'Instruction',
-    q: 'q3', phase: 1, locked: 0, new: 17, total: 17,
-    desc: 'Reusable prompt template paired with model parameters. Version-controlled with test cases for quality validation before deployment.',
+    q: 'q3', v1: true, locked: 0, new: 17, total: 17,
+    desc: 'Reusable prompt template paired with model parameters. V1: version field stored, single active version. Test cases stored but execution deferred to V3.',
     storage: 'Redis / DB',
     key: 'instructionId',
     question: 'Q3: How do they think and decide?',
     sections: [
-      { name: 'All Fields', status: 'n', fields: [
+      { name: 'All Fields', status: 'n', ver: 'v1', fields: [
         ['instructionId', 'string', 'Unique identifier'],
         ['orgId / subOrgId', 'string', 'Organization scope'],
         ['name', 'string', 'Display name'],
@@ -330,8 +396,8 @@ const E = {
         ['topP', 'number', 'Top-p sampling'],
         ['maxTokens', 'number', 'Max output tokens'],
         ['modelConfigId', 'string', 'Which model to use → ModelConfig'],
-        ['version', 'number', 'Incremented, enables rollback'],
-        ['testCases', 'array', '{ input, expectedOutputContains, expectedFormat }'],
+        ['version', 'number', 'V1: stored. V3: full history + rollback'],
+        ['testCases', 'array', 'V1: stored. V3: execution enforced'],
         ['status', 'string', 'active | inactive'],
         ['createdBy / updatedBy', 'string', 'User IDs'],
         ['created / updated', 'ISO 8601', 'Timestamps'],
@@ -340,47 +406,51 @@ const E = {
   },
   collection: {
     label: 'Collection',
-    q: 'q2', phase: 1, locked: 10, new: 7, total: 17,
-    desc: 'Knowledge base for RAG. Files extracted, chunked, embedded, stored across Milvus/Elasticsearch/MongoDB. Searched by Non-LLM steps with RAG_API.',
+    q: 'q2', v1: true, locked: 10, new: 7, total: 17,
+    desc: 'Knowledge base for RAG. V1: file upload + URL crawl, by paragraph/token count chunking, basic_search + search_with_files + retrieve_files. Hybrid search deferred to V2.',
     storage: 'MongoDB',
     key: '_id',
     question: 'Q2: What do they know? (Unstructured)',
     sections: [
-      { name: 'Core', status: 'l', fields: [
+      { name: 'Core', status: 'l', ver: 'v1', fields: [
         ['_id', 'string', 'Unique identifier'],
         ['name', 'string', 'Display name'],
         ['organizationId', 'string', 'Organization scope'],
         ['subOrganizationId', 'string', 'Sub-organization scope'],
         ['dimensions', 'number', 'Embedding dimensions (e.g. 1024)'],
-        ['vectorStoreType', 'string', 'MongoDB | Milvus'],
-        ['chunkingStrategy', 'string', 'Chunking approach'],
-        ['embeddingModel', 'string', 'e.g. jina'],
+        ['vectorStoreType', 'string', 'V1: Milvus primary'],
+        ['chunkingStrategy', 'string', 'V1: by_paragraph | by_token_count'],
+        ['embeddingModel', 'string', 'V1: single model per collection'],
         ['created / updated', 'ISO 8601', 'Timestamps'],
       ]},
-      { name: 'Additions', status: 'n', fields: [
+      { name: 'Additions', status: 'n', ver: 'v1', fields: [
         ['description', 'string', 'What this collection contains'],
         ['status', 'string', 'active | inactive'],
         ['createdBy / updatedBy', 'string', 'User IDs'],
       ]},
-      { name: 'Extensions', status: 'n', fields: [
-        ['accessControl', 'object', 'allowedAssistants[], sensitivityLevel'],
-        ['freshness', 'object', 'retentionDays, reIngestionSchedule, lastIngested'],
+      { name: 'Extensions', status: 'n', ver: 'v1', fields: [
+        ['accessControl', 'object', 'V1: allowedAssistants[], sensitivityLevel'],
         ['language', 'string', 'Content language'],
         ['tags', 'string[]', 'Categorization tags'],
+      ]},
+      { name: 'Freshness', status: 'n', ver: 'v2', fields: [
+        ['freshness.retentionDays', 'number', 'V2: document retention'],
+        ['freshness.reIngestionSchedule', 'string', 'V1: manual only. V2: daily | weekly'],
+        ['freshness.lastIngested', 'ISO 8601', 'Last ingestion timestamp'],
       ]},
     ]
   },
   connection: {
     label: 'Connection',
-    q: 'q2', phase: 2, locked: 10, new: 5, total: 15,
-    desc: 'Bridge to external data sources. 9 types: PostgreSQL, MySQL, SQL Server, MongoDB, Redis, REST API, Elasticsearch, Milvus, File. app_id ≠ subOrgId.',
+    q: 'q2', v1: false, locked: 10, new: 5, total: 15,
+    desc: 'Bridge to external data sources (BeXO). DEFERRED TO V2. 9 source types: PostgreSQL, MySQL, SQL Server, MongoDB, Redis, REST API, Elasticsearch, Milvus, File.',
     storage: 'Redis',
     key: 'connection_id',
     question: 'Q2: What do they know? (Structured)',
     sections: [
-      { name: 'Core', status: 'l', fields: [
+      { name: 'Core', status: 'l', ver: 'v2', fields: [
         ['org_id', 'string', 'Organization scope'],
-        ['app_id', 'string', 'Application scope (≠ subOrgId)'],
+        ['app_id', 'string', 'Application scope (not subOrgId)'],
         ['connection_id', 'string', 'Unique identifier'],
         ['connection_name', 'string', 'Display name'],
         ['description', 'string', 'Optional description'],
@@ -389,47 +459,44 @@ const E = {
         ['advanced_options', 'object', 'retry, logging, pool size'],
         ['created_at / updated_at', 'datetime', 'Timestamps'],
       ]},
-      { name: 'Additions', status: 'n', fields: [
-        ['createdBy / updatedBy', 'string', 'User IDs'],
-      ]},
-      { name: 'Schema Discovery', status: 'n', fields: [
+      { name: 'Schema Discovery', status: 'n', ver: 'v2', fields: [
         ['schemaDiscovery.tables', 'array', 'Table definitions with business descriptions'],
         ['schemaDiscovery.tables[].fields', 'array', 'Field name, type, businessName, sampleValues, sensitive'],
         ['schemaDiscovery.tables[].relationships', 'array', 'Field → related table.field'],
       ]},
-      { name: 'Action Templates', status: 'n', fields: [
-        ['actionTemplates', 'array', 'Predefined safe queries: templateId, queryTemplate, params, validation'],
+      { name: 'Action Templates', status: 'n', ver: 'v3', fields: [
+        ['actionTemplates', 'array', 'V3: predefined safe write queries'],
       ]},
-      { name: 'Data Change Events', status: 'n', fields: [
-        ['dataChangeEvents', 'array', 'Watch table/fields, emit to trigger on insert/update/delete'],
+      { name: 'Data Change Events', status: 'n', ver: 'v2', fields: [
+        ['dataChangeEvents', 'array', 'V2: watch table/fields, emit to trigger'],
       ]},
     ]
   },
   apiConfig: {
     label: 'API Config',
-    q: 'q4', phase: 1, locked: 8, new: 8, total: 16,
-    desc: 'External API configuration. Referenced by API steps. Enriched with typed endpoints, rate limits, and business-friendly field descriptions.',
+    q: 'q4', v1: true, locked: 0, new: 16, total: 16,
+    desc: 'External API configuration. V1: base URL, auth (none/basic/bearer/api_key), endpoint definitions, pagination, retry policy. OAuth2 deferred to V2. Vault deferred to V3.',
     storage: 'Redis',
     key: 'apiConfigId',
     question: 'Q4: What can they do?',
     sections: [
-      { name: 'Core', status: 'l', fields: [
+      { name: 'Core', status: 'n', ver: 'v1', fields: [
         ['apiConfigId', 'string', 'Unique identifier'],
         ['orgId / subOrgId', 'string', 'Organization scope'],
         ['name', 'string', 'Display name'],
         ['description', 'string', 'What this API does'],
         ['baseUrl', 'string', 'Base URL'],
-        ['authType', 'string', 'none | basic | bearer | api_key | oauth2'],
-        ['authConfig', 'object', 'Auth credentials'],
+        ['authType', 'string', 'V1: none | basic | bearer | api_key. V2: + oauth2'],
+        ['authConfig', 'object', 'V1: plain config. V3: vault references'],
         ['defaultHeaders', 'object', 'Default request headers'],
         ['timeout', 'number', 'Request timeout (seconds)'],
       ]},
-      { name: 'Extensions', status: 'n', fields: [
+      { name: 'Extensions', status: 'n', ver: 'v1', fields: [
         ['rateLimits', 'object', 'requestsPerMinute, requestsPerDay'],
+        ['retryPolicy', 'object', 'V1: maxRetries, backoffMs'],
         ['healthCheckEndpoint', 'string', 'For connection testing'],
+        ['pagination', 'object', 'V1: offset, page, cursor, link_header'],
         ['endpoints', 'array', 'Typed endpoint definitions'],
-        ['endpoints[].path', 'string', 'URL path with {params}'],
-        ['endpoints[].method', 'string', 'GET | POST | PUT | PATCH | DELETE'],
         ['endpoints[].responseSchema', 'object', 'Business-friendly field descriptions'],
         ['endpoints[].errorMappings', 'object', 'HTTP code → meaning'],
       ]},
@@ -437,32 +504,32 @@ const E = {
   },
   channel: {
     label: 'Channel',
-    q: 'q4', phase: 1, locked: 7, new: 0, total: 7,
-    desc: 'Communication interface. 5 types: Voice, WhatsApp, Messenger, Email, Webchat. Fully locked — no new fields. Channel behavior handled by FEO transport layer.',
+    q: 'q4', v1: true, locked: 7, new: 0, total: 7,
+    desc: 'Communication interface. Fully locked. V1 scope: REST API (direct call), Web Chat (embedded widget), Email (basic SMTP). V2: Slack, Teams, WhatsApp.',
     storage: 'Redis',
     key: '_id',
     question: 'Q4: How do they communicate?',
     sections: [
-      { name: 'All Fields (Locked)', status: 'l', fields: [
+      { name: 'All Fields (Locked)', status: 'l', ver: 'v1', fields: [
         ['_id', 'string', 'Unique identifier'],
         ['organizationId', 'string', 'Organization scope'],
         ['subOrganizationId', 'string', 'Sub-organization scope'],
         ['assistantId', 'string', 'Which employee this channel triggers'],
         ['address', 'string', 'Phone number, email, widget ID, etc.'],
-        ['type', 'string', 'Voice | Whatsapp | Messenger | Email | Webchat'],
+        ['type', 'string', 'V1: Webchat | Email. V2: + Slack | Teams | Whatsapp'],
         ['access_token', 'string?', 'OAuth/API token (optional)'],
       ]},
     ]
   },
   trigger: {
     label: 'Trigger',
-    q: 'cc', phase: 2, locked: 0, new: 18, total: 18,
-    desc: 'Activation mechanism. 4 types: schedule (cron), event (webhook/data change), threshold (metric watch), agent (from another employee). Safety limits included.',
+    q: 'cc', v1: false, locked: 0, new: 18, total: 18,
+    desc: 'Activation mechanism. DEFERRED TO V2. 4 types: schedule (cron), event (webhook/data change), threshold (metric watch), agent (from another employee).',
     storage: 'DB (persistent)',
     key: 'triggerId',
     question: 'Cross-cutting: When do they act without being asked?',
     sections: [
-      { name: 'Identity', status: 'n', fields: [
+      { name: 'Identity', status: 'n', ver: 'v2', fields: [
         ['triggerId', 'string', 'Unique identifier'],
         ['orgId / subOrgId', 'string', 'Organization scope'],
         ['assistantId', 'string', 'Which employee owns this trigger'],
@@ -470,28 +537,19 @@ const E = {
         ['enabled', 'boolean', 'Active flag'],
         ['type', 'string', 'schedule | event | threshold | agent'],
       ]},
-      { name: 'Schedule Config', status: 'n', fields: [
+      { name: 'Schedule Config', status: 'n', ver: 'v2', fields: [
         ['scheduleConfig.cron', 'string', 'Cron expression'],
         ['scheduleConfig.timezone', 'string', 'IANA timezone'],
         ['scheduleConfig.opcodeId', 'string', 'Which opcode to run'],
         ['scheduleConfig.overlapPolicy', 'string', 'skip | queue | parallel'],
       ]},
-      { name: 'Event Config', status: 'n', fields: [
+      { name: 'Event Config', status: 'n', ver: 'v2', fields: [
         ['eventConfig.source', 'string', 'webhook | data_change | knowledge_update'],
         ['eventConfig.filter', 'object', 'Event matching criteria'],
         ['eventConfig.debounceMs', 'number', 'Min time between fires'],
         ['eventConfig.inputMapping', 'object', 'Event data → opcode context'],
       ]},
-      { name: 'Threshold Config', status: 'n', fields: [
-        ['thresholdConfig.metric', 'string', 'Metric to monitor'],
-        ['thresholdConfig.condition', 'string', 'Expression (e.g. > 50)'],
-        ['thresholdConfig.evaluationFrequency', 'string', 'How often to check'],
-      ]},
-      { name: 'Agent Config', status: 'n', fields: [
-        ['agentConfig.fromAssistantId', 'string', 'Source employee'],
-        ['agentConfig.protocol', 'string', 'request_response | delegate'],
-      ]},
-      { name: 'Safety & Status', status: 'n', fields: [
+      { name: 'Safety & Status', status: 'n', ver: 'v2', fields: [
         ['safetyLimits', 'object', 'maxFiresPerHour, maxFiresPerDay, cooldownMs'],
         ['lastFired', 'ISO 8601', 'Last activation time'],
         ['fireCount', 'number', 'Total activations'],
@@ -501,21 +559,21 @@ const E = {
   },
   executionLog: {
     label: 'Execution Log',
-    q: 'q5', phase: 1, locked: 0, new: 16, total: 16,
-    desc: 'Audit record of every opcode execution. Write-once, immutable. Tracks trigger source, step-by-step trace, cost, tokens, evaluation score, and user feedback.',
+    q: 'q5', v1: true, locked: 0, new: 16, total: 16,
+    desc: 'Audit record of every execution. V1: full run record with step-by-step trace, cost, tokens. Write-once, immutable, 90-day retention. Non-negotiable from day one.',
     storage: 'DB (append-only)',
     key: 'executionLogId',
     question: 'Q5: How do we trust them?',
     sections: [
-      { name: 'Core', status: 'n', fields: [
+      { name: 'Core', status: 'n', ver: 'v1', fields: [
         ['executionLogId', 'string', 'Unique identifier'],
         ['orgId / subOrgId', 'string', 'Organization scope'],
         ['assistantId', 'string', 'Which employee executed'],
         ['opcodeId', 'string', 'Which opcode ran'],
-        ['triggerSource', 'string', 'channel | schedule | event | agent | manual'],
+        ['triggerSource', 'string', 'V1: channel | manual. V2: + schedule | event | agent'],
         ['triggerDetails', 'object', 'channelId, userId, triggerId, fromAssistantId'],
       ]},
-      { name: 'Execution Data', status: 'n', fields: [
+      { name: 'Execution Data', status: 'n', ver: 'v1', fields: [
         ['input', 'object', 'Request input/context'],
         ['output', 'object', 'Final output'],
         ['steps', 'array', 'Per-step trace: duration, status, tokens, cost, confidence'],
@@ -523,9 +581,9 @@ const E = {
         ['totalCost', 'number', 'Total LLM cost'],
         ['totalTokens', 'object', 'Total input + output tokens'],
       ]},
-      { name: 'Quality', status: 'n', fields: [
+      { name: 'Quality', status: 'n', ver: 'v1', fields: [
         ['status', 'string', 'success | error | escalated'],
-        ['evaluationScore', 'number', 'Output quality score (0-1)'],
+        ['evaluationScore', 'number', 'V2: output quality score (0-1)'],
         ['userFeedback', 'object', 'rating (1-5), comment'],
         ['timestamp', 'ISO 8601', 'Execution timestamp'],
       ]},
@@ -538,18 +596,19 @@ const RELS = [
   { from: 'employee', to: 'opcode', label: 'opcodes[]', dashes: false },
   { from: 'employee', to: 'channel', label: 'channels[]', dashes: false },
   { from: 'employee', to: 'collection', label: 'collections[]', dashes: false },
-  { from: 'employee', to: 'connection', label: 'databases[]', dashes: false },
-  { from: 'employee', to: 'trigger', label: 'triggers[]', dashes: false },
+  { from: 'employee', to: 'connection', label: 'databases[]', dashes: [5, 5] },
+  { from: 'employee', to: 'trigger', label: 'triggers[]', dashes: [5, 5] },
   { from: 'employee', to: 'modelConfig', label: 'router', dashes: true },
   { from: 'employee', to: 'instruction', label: 'router', dashes: true },
   { from: 'opcode', to: 'modelConfig', label: 'step.unique_name', dashes: true },
   { from: 'opcode', to: 'apiConfig', label: 'step._id', dashes: true },
   { from: 'opcode', to: 'collection', label: 'step.collection_id', dashes: true },
+  { from: 'opcode', to: 'opcode', label: 'Subflow step', dashes: true },
   { from: 'trigger', to: 'opcode', label: 'opcodeId', dashes: false },
   { from: 'executionLog', to: 'employee', label: 'assistantId', dashes: true },
   { from: 'executionLog', to: 'opcode', label: 'opcodeId', dashes: true },
   { from: 'instruction', to: 'modelConfig', label: 'modelConfigId', dashes: false },
-  { from: 'connection', to: 'trigger', label: 'dataChangeEvents', dashes: true },
+  { from: 'connection', to: 'trigger', label: 'dataChangeEvents', dashes: [5, 5] },
 ];
 
 // ── Build vis.js nodes ──
@@ -568,20 +627,22 @@ const positions = {
 };
 
 const nodes = new vis.DataSet(Object.entries(E).map(([id, e]) => {
-  const c = COLORS[e.q];
+  const c = e.v1 ? COLORS[e.q] : DEFERRED;
   const pos = positions[id];
+  const v1tag = e.v1 ? 'V1' : 'V2+';
   return {
     id,
-    label: `${e.label}\n${e.locked} Locked + ${e.new} New = ${e.total} fields`,
+    label: `${e.label}\n${e.locked} Locked + ${e.new} New = ${e.total} fields\n[${v1tag}]`,
     x: pos.x, y: pos.y,
     shape: 'box',
-    borderWidth: 2,
+    borderWidth: e.v1 ? 2 : 1,
     borderWidthSelected: 3,
     color: { background: c.bg, border: c.border, highlight: c.highlight, hover: c.highlight },
     font: { color: c.font, size: 13, face: '-apple-system, sans-serif', multi: true, bold: { size: 14 } },
     margin: { top: 12, bottom: 12, left: 16, right: 16 },
-    shadow: { enabled: true, color: c.border + '33', size: 12, x: 0, y: 0 },
-    phase: e.phase,
+    shadow: e.v1 ? { enabled: true, color: c.border + '33', size: 12, x: 0, y: 0 } : { enabled: false },
+    shapeProperties: e.v1 ? {} : { borderDashes: [5, 5] },
+    isV1: e.v1,
   };
 }));
 
@@ -593,7 +654,7 @@ const edges = new vis.DataSet(RELS.map((r, i) => ({
   color: { color: '#30363d', highlight: '#58a6ff', hover: '#484f58' },
   font: { color: '#6e7681', size: 10, strokeWidth: 3, strokeColor: '#0d1117', face: 'monospace' },
   dashes: r.dashes,
-  smooth: { type: 'curvedCW', roundness: 0.15 },
+  smooth: r.from === r.to ? { type: 'curvedCW', roundness: 0.6 } : { type: 'curvedCW', roundness: 0.15 },
   width: 1.5,
   hoverWidth: 0.5,
 })));
@@ -645,7 +706,7 @@ function showPanel(id) {
       <h2 style="color:${c.border}">${e.label}</h2>
       <div class="sub">${e.desc}</div>
       <div class="pm">
-        <span class="tag phase">Phase v${e.phase}</span>
+        <span class="tag ${e.v1 ? 'v1active' : 'v2defer'}">${e.v1 ? 'V1 Active' : 'V2+ Deferred'}</span>
         <span class="tag stor">${e.storage}</span>
         <span class="tag key">key: ${e.key}</span>
       </div>
@@ -671,9 +732,11 @@ function showPanel(id) {
   // Sections
   e.sections.forEach((s, i) => {
     const isFirst = i === 0;
+    const verClass = s.ver || 'v1';
     html += `<div class="sec">
       <div class="sh" onclick="this.nextElementSibling.classList.toggle('show')">
         <h3>${s.name}</h3>
+        <span class="ver ${verClass}">${verClass.toUpperCase()}</span>
         <span class="badge ${s.status}">${s.status === 'l' ? 'LOCKED' : 'NEW'}</span>
       </div>
       <div class="sb${isFirst ? ' show' : ''}">`;
@@ -689,18 +752,20 @@ function showPanel(id) {
     outgoing.forEach(r => {
       const target = E[r.to];
       html += `<div class="ri" onclick="showPanel('${r.to}')">
-        <span class="arr">→</span>
+        <span class="arr">&rarr;</span>
         <span class="tgt">${target.label}</span>
         <span class="via">via ${r.label}</span>
       </div>`;
     });
     incoming.forEach(r => {
       const source = E[r.from];
-      html += `<div class="ri" onclick="showPanel('${r.from}')">
-        <span class="arr">←</span>
-        <span class="tgt">${source.label}</span>
-        <span class="via">via ${r.label}</span>
-      </div>`;
+      if (r.from !== id) {
+        html += `<div class="ri" onclick="showPanel('${r.from}')">
+          <span class="arr">&larr;</span>
+          <span class="tgt">${source.label}</span>
+          <span class="via">via ${r.label}</span>
+        </div>`;
+      }
     });
     html += `</div>`;
   }
@@ -717,7 +782,7 @@ function hidePanel() {
   network.unselectAll();
 }
 
-// ── Phase filter ──
+// ── Version filter ──
 let currentFilter = 0;
 
 function setFilter(phase) {
@@ -727,14 +792,33 @@ function setFilter(phase) {
   });
 
   Object.entries(E).forEach(([id, e]) => {
+    const c = COLORS[e.q];
     if (phase === 0) {
-      nodes.update({ id, hidden: false, opacity: 1 });
-    } else {
-      const match = e.phase <= phase;
+      // Show all
       nodes.update({ id, hidden: false, color: {
-        background: match ? COLORS[e.q].bg : '#161b2244',
-        border: match ? COLORS[e.q].border : '#30363d44',
-      }, font: { color: match ? '#e6edf3' : '#484f5866' } });
+        background: e.v1 ? c.bg : DEFERRED.bg,
+        border: e.v1 ? c.border : DEFERRED.border,
+      }, font: { color: e.v1 ? '#e6edf3' : '#484f58' } });
+    } else if (phase === 1) {
+      // V1 Active only
+      const isV1 = e.v1;
+      nodes.update({ id, hidden: false, color: {
+        background: isV1 ? c.bg : '#0d111744',
+        border: isV1 ? c.border : '#21262d44',
+      }, font: { color: isV1 ? '#e6edf3' : '#30363d66' } });
+    } else if (phase === 2) {
+      // V2 — show V1 + Connection/Trigger highlighted
+      const isV2 = e.v1 || id === 'connection' || id === 'trigger';
+      nodes.update({ id, hidden: false, color: {
+        background: isV2 ? c.bg : '#0d111744',
+        border: isV2 ? c.border : '#21262d44',
+      }, font: { color: isV2 ? '#e6edf3' : '#30363d66' } });
+    } else {
+      // V3/V4 — show all active
+      nodes.update({ id, hidden: false, color: {
+        background: c.bg,
+        border: c.border,
+      }, font: { color: '#e6edf3' } });
     }
   });
 }
